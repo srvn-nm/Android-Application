@@ -13,7 +13,7 @@ package com.example.realtime_obstacle_detection.ui.screens.initialConfigurations
  * - YOLOv8 / YOLOv12: Refers to different versions of the YOLO model architecture.
  * - 15 vs. 18 Obstacles: Refers to the number of object classes in the detection dataset.
  * - FP16, FP32, INT8, Integer Quant: Represents different quantization and precision formats
- *   to balance model size, speed, and accuracy.
+ * to balance model size, speed, and accuracy.
  *
  * The `DEFAULT` model is set to `YOLO8_18_OBSTACLE_FP32BIT`, but can be customized as needed.
  */
@@ -61,39 +61,91 @@ enum class Models(
         "18Obstacles_labels.txt"
     ),
 
-    // EE_Backbone + Neck Variants -------------------------------------------------------------------
+    // EE_Backbone + Neck Variants (Base) -----------------------------------------------------------
     EE_BACKBONE_NECK_FP16(
-        "EE Backbone + Neck FP16",
+        "EE Backbone + Neck FP16 (Base)",
         "EE_Backbone_Neck_float16.tflite",
         "18Obstacles_labels.txt"
     ),
     EE_BACKBONE_NECK_FP32(
-        "EE Backbone + Neck FP32",
+        "EE Backbone + Neck FP32 (Base)",
         "EE_Backbone_Neck_float32.tflite",
         "18Obstacles_labels.txt"
     ),
     EE_BACKBONE_NECK_INT8(
-        "EE Backbone + Neck INT8",
+        "EE Backbone + Neck INT8 (Base)",
         "EE_Backbone_Neck_int8.tflite",
         "18Obstacles_labels.txt"
     ),
 
-    // EE_Backbone Only Variants ---------------------------------------------------------------------
+    // EE Pruned Backbone + Neck Variants (New) -----------------------------------------------------
+//    EE_NECK_PRUNED_FP16(
+//        "EE Neck Pruned FP16",
+//        "EE_backbone_neck_manual_pruned_float16.tflite",
+//        "18Obstacles_labels.txt"
+//    ),
+//    EE_NECK_PRUNED_FP32(
+//        "EE Neck Pruned FP32",
+//        "EE_backbone_neck_manual_pruned_float32.tflite",
+//        "18Obstacles_labels.txt"
+//    ),
+//    EE_NECK_PRUNED_INT8(
+//        "EE Neck Pruned INT8",
+//        "EE_backbone_neck_manual_pruned_int8.tflite",
+//        "18Obstacles_labels.txt"
+//    ),
+
+    // EE_Backbone Only Variants (Base) -------------------------------------------------------------
     EE_BACKBONE_ONLY_FP16(
-        "EE Backbone Only FP16",
+        "EE Backbone Only FP16 (Base)",
         "EE_Backbone_only_float16.tflite",
         "18Obstacles_labels.txt"
     ),
     EE_BACKBONE_ONLY_INT8(
-        "EE Backbone Only INT8",
+        "EE Backbone Only INT8 (Base)",
         "EE_Backbone_only_int8.tflite",
         "18Obstacles_labels.txt"
     ),
     EE_BACKBONEONLY_FP32(
-        "EE BackboneOnly FP32",
+        "EE BackboneOnly FP32 (Base)",
         "EE_Backboneonly_float32.tflite",
         "18Obstacles_labels.txt"
     ),
+
+    // EE Pruned Backbone Variants  --------------------------------------------------------
+    EE_ONLY_PRUNED_FP16(
+        "EE Pruned FP16",
+        "EE_backbone_neck_pruned_float16.tflite",
+        "18Obstacles_labels.txt"
+    ),
+    EE_ONLY_PRUNED_FP32(
+        "EE Pruned FP32",
+        "EE_backbone_neck_pruned_float32.tflite",
+        "18Obstacles_labels.txt"
+    ),
+    EE_ONLY_PRUNED_INT8(
+        "EE Pruned INT8",
+        "EE_backbone_neck_pruned_int8.tflite",
+        "18Obstacles_labels.txt"
+    ),
+
+    // Customized Pruned Variants (New) --------------------------------------------------------------
+    CUSTOMIZED_PRUNED_FP16(
+        "Customized Pruned FP16",
+        "customized_without_EE_pruned_float16.tflite",
+        "18Obstacles_labels.txt"
+    ),
+    CUSTOMIZED_PRUNED_FP32(
+        "Customized Pruned FP32",
+        "customized_without_EE_pruned_float32.tflite",
+        "18Obstacles_labels.txt"
+    ),
+    CUSTOMIZED_PRUNED_INT8(
+        "Customized Pruned INT8",
+        "customized_without_EE_pruned_int8.tflite",
+        "18Obstacles_labels.txt"
+    ),
+
 
     // YOLOv8 (Original Model) -----------------------------------------------------------------------
     YOLOV8_FLOAT32(

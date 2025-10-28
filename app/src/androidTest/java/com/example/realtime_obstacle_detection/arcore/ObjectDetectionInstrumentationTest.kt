@@ -63,6 +63,8 @@ class ObjectDetectionInstrumentationTest {
         const val BASE_HDR = false // Baseline is configured without HDR
         // Threshold to visually flag slow performance in reports
         const val PERFORMANCE_WARNING_THRESHOLD_MS = 200.0
+        // Minimum time a frame takes, simulating the camera/UI overhead (1000ms / 9 FPS).
+        const val MINIMUM_FRAME_TIME_MS = 111.1
     }
     private val performanceWarningThresholdMs = PERFORMANCE_WARNING_THRESHOLD_MS
 
@@ -203,8 +205,10 @@ class ObjectDetectionInstrumentationTest {
 
         // 4. Calculate Averages (Inference Time, FPS, and Detections)
         val avgInferenceTimeMs = if (inferenceTimes.isNotEmpty()) inferenceTimes.average() else 0.0
+        // Calculate realistic average frame time by enforcing a minimum cap (33.3ms for 30 FPS).
+        val avgFrameTimeMs = maxOf(avgInferenceTimeMs, MINIMUM_FRAME_TIME_MS)
         // Calculate FPS: 1000 ms per second / average inference time
-        val avgFps = if (avgInferenceTimeMs > 0) 1000.0 / avgInferenceTimeMs else 0.0
+        val avgFps = if (avgFrameTimeMs > 0) 1000.0 / avgFrameTimeMs else 0.0
         // Calculate average detections per image
         val avgDetections = if (totalImages > 0) totalDetections.toDouble() / totalImages else 0.0
 
@@ -235,7 +239,7 @@ class ObjectDetectionInstrumentationTest {
                 report.append("------------------------------------------------------------------------------------------------------------------------\n")
                 report.append("  [Average Performance]\n")
                 report.append("  Avg Inference Time: ${"%.2f".format(result.avgInferenceTimeMs)} ms\n")
-                report.append("  Avg FPS: ${"%.2f".format(result.avgFps)}\n")
+//                report.append("  Avg FPS: ${"%.2f".format(result.avgFps)}\n")
                 // Verification that the pipeline was active
                 report.append("  Avg Detections per Image: ${"%.2f".format(result.avgDetections)} (Confirms distance assignment pipeline is active)\n")
                 report.append("  Status: $perfStatus\n")
@@ -249,20 +253,35 @@ class ObjectDetectionInstrumentationTest {
 
     // --- INDIVIDUAL TEST METHODS ---
     // Each @Test method ensures that one model is tested in isolation, running the four configurations.
-    @Test fun evaluate_YOLO8_18_OBSTACLE_FP16BIT() { generateDetailedReport(Models.YOLO8_18_OBSTACLE_FP16BIT) }
-    @Test fun evaluate_YOLO8_18_OBSTACLE_FP32BIT() { generateDetailedReport(Models.YOLO8_18_OBSTACLE_FP32BIT) }
-//    @Test fun evaluate_YOLO8_18_OBSTACLE_FULL_INTEGER() { generateDetailedReport(Models.YOLO8_18_OBSTACLE_FULL_INTEGER) }
-    @Test fun evaluate_YOLO8_18_OBSTACLE_INT8() { generateDetailedReport(Models.YOLO8_18_OBSTACLE_INT8) }
-//    @Test fun evaluate_YOLO8_18_OBSTACLE_INTEGER_QUANT() { generateDetailedReport(Models.YOLO8_18_OBSTACLE_INTEGER_QUANT) }
-//    @Test fun evaluate_YOLO12_18_OBSTACLE_FP16BIT() { generateDetailedReport(Models.YOLO12_18_OBSTACLE_FP16BIT) }
+//    @Test fun evaluate_YOLO8_18_OBSTACLE_FP16BIT() { generateDetailedReport(Models.YOLO8_18_OBSTACLE_FP16BIT) }
+//    @Test fun evaluate_YOLO8_18_OBSTACLE_FP32BIT() { generateDetailedReport(Models.YOLO8_18_OBSTACLE_FP32BIT) }
+////    @Test fun evaluate_YOLO8_18_OBSTACLE_FULL_INTEGER() { generateDetailedReport(Models.YOLO8_18_OBSTACLE_FULL_INTEGER) }
+//    @Test fun evaluate_YOLO8_18_OBSTACLE_INT8() { generateDetailedReport(Models.YOLO8_18_OBSTACLE_INT8) }
+////    @Test fun evaluate_YOLO8_18_OBSTACLE_INTEGER_QUANT() { generateDetailedReport(Models.YOLO8_18_OBSTACLE_INTEGER_QUANT) }
+////    @Test fun evaluate_YOLO12_18_OBSTACLE_FP16BIT() { generateDetailedReport(Models.YOLO12_18_OBSTACLE_FP16BIT) }
+////    @Test fun evaluate_YOLO12_18_OBSTACLE_FP32BIT() { generateDetailedReport(Models.YOLO12_18_OBSTACLE_FP32BIT) }
+//    @Test fun evaluate_EE_BACKBONE_NECK_FP16() { generateDetailedReport(Models.EE_BACKBONE_NECK_FP16) }
+//    @Test fun evaluate_EE_BACKBONE_NECK_FP32() { generateDetailedReport(Models.EE_BACKBONE_NECK_FP32) }
+//    @Test fun evaluate_EE_BACKBONE_NECK_INT8() { generateDetailedReport(Models.EE_BACKBONE_NECK_INT8) }
+//    @Test fun evaluate_EE_BACKBONE_ONLY_FP16() { generateDetailedReport(Models.EE_BACKBONE_ONLY_FP16) }
+//    @Test fun evaluate_EE_BACKBONE_ONLY_INT8() { generateDetailedReport(Models.EE_BACKBONE_ONLY_INT8) }
+//    @Test fun evaluate_EE_BACKBONEONLY_FP32() { generateDetailedReport(Models.EE_BACKBONEONLY_FP32) }
+//    @Test fun evaluate_YOLOV8_FLOAT32() { generateDetailedReport(Models.YOLOV8_FLOAT32) }
+    @Test fun evaluate_CUSTOMIZED_PRUNED_FP16() { generateDetailedReport(Models.CUSTOMIZED_PRUNED_FP16) }
+    @Test fun evaluate_CUSTOMIZED_PRUNED_FP32() { generateDetailedReport(Models.CUSTOMIZED_PRUNED_FP32) }
+    @Test fun evaluate_CUSTOMIZED_PRUNED_INT8() { generateDetailedReport(Models.CUSTOMIZED_PRUNED_INT8) }
+//    @Test fun evaluate_EE_NECK_PRUNED_FP16() { generateDetailedReport(Models.EE_NECK_PRUNED_FP16) }
+//    @Test fun evaluate_EE_NECK_PRUNED_FP32() { generateDetailedReport(Models.EE_NECK_PRUNED_FP32) }
+//    @Test fun evaluate_EE_NECK_PRUNED_INT8() { generateDetailedReport(Models.EE_NECK_PRUNED_INT8) }
+    @Test fun evaluate_EE_ONLY_PRUNED_FP16() { generateDetailedReport(Models.EE_ONLY_PRUNED_FP16) }
+    @Test fun evaluate_EE_ONLY_PRUNED_FP32() { generateDetailedReport(Models.EE_ONLY_PRUNED_FP32) }
+    @Test fun evaluate_EE_ONLY_PRUNED_INT8() { generateDetailedReport(Models.EE_ONLY_PRUNED_INT8) }
 //    @Test fun evaluate_YOLO12_18_OBSTACLE_FP32BIT() { generateDetailedReport(Models.YOLO12_18_OBSTACLE_FP32BIT) }
-    @Test fun evaluate_EE_BACKBONE_NECK_FP16() { generateDetailedReport(Models.EE_BACKBONE_NECK_FP16) }
-    @Test fun evaluate_EE_BACKBONE_NECK_FP32() { generateDetailedReport(Models.EE_BACKBONE_NECK_FP32) }
-    @Test fun evaluate_EE_BACKBONE_NECK_INT8() { generateDetailedReport(Models.EE_BACKBONE_NECK_INT8) }
-    @Test fun evaluate_EE_BACKBONE_ONLY_FP16() { generateDetailedReport(Models.EE_BACKBONE_ONLY_FP16) }
-    @Test fun evaluate_EE_BACKBONE_ONLY_INT8() { generateDetailedReport(Models.EE_BACKBONE_ONLY_INT8) }
-    @Test fun evaluate_EE_BACKBONEONLY_FP32() { generateDetailedReport(Models.EE_BACKBONEONLY_FP32) }
-    @Test fun evaluate_YOLOV8_FLOAT32() { generateDetailedReport(Models.YOLOV8_FLOAT32) }
+//    @Test fun evaluate_YOLO8_18_OBSTACLE_FP32BIT() { generateDetailedReport(Models.YOLO8_18_OBSTACLE_FP32BIT) }
+//    @Test fun evaluate_YOLO8_18_OBSTACLE_FULL_INTEGER() { generateDetailedReport(Models.YOLO8_18_OBSTACLE_FULL_INTEGER) }
+//    @Test fun evaluate_YOLO8_18_OBSTACLE_INT8() { generateDetailedReport(Models.YOLO8_18_OBSTACLE_INT8) }
+//    @Test fun evaluate_YOLO8_18_OBSTACLE_INTEGER_QUANT() { generateDetailedReport(Models.YOLO8_18_OBSTACLE_INTEGER_QUANT) }
+//    @Test fun evaluate_YOLOV8_FLOAT32() { generateDetailedReport(Models.YOLOV8_FLOAT32) }
 
 
     // --- FINAL COMPARISON TABLE TEST ---
